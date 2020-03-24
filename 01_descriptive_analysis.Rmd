@@ -1,0 +1,351 @@
+---
+title: "Descriptive analysis"
+author: "Łukasz Wawrowski"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(e1071)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Descriptive statistics
+
+**Kompleksowa analiza struktury** oznacza wyczerpujący opis cech zbiorowości statystycznej. Do charakterystyk najczęściej wykorzystywanych przy opisie struktury zbiorowości należą:
+
+- miary przeciętne - służące do określania tej wartości zmiennej opisanej przez rozkład, wokół której skupiają się pozostałe wartości zmiennej,
+- miary rozproszenia (dyspersji) - służące do badania stopnia zróżnicowania wartości zmiennej,
+- miary asymetrii - służące do badania asymetrii rozkładu,
+- miary koncentracji - służące do analizy stopnia skupienia poszczególnych jednostek wokół średniej.
+
+Analiza struktury bazuje na dwóch typach miar:
+
+- miary klasyczne - obliczane na podstawie wszystkich obserwacji,
+- miary pozycyjne - wartość miary wskazuje dana jednostka.
+
+Celem analizy struktury jest dostarczenie kilku liczb, które w łatwy sposób pozwolą na opis i porównania badanych cech.
+
+**Dominanta** czyli najczęściej występująca wartość. Inaczej moda, modalna, tryb (w Excelu - kalka językowa z angielskiego słowa _mode_. Wartość dominanty można ustalić jedynie dla rozkładów jednomodalnych. 
+
+W Excelu jest funkcja:
+
+- WYST.NAJCZĘSĆIEJ,
+
+jednak dla rozkładów wielomodalnych zwróci ona pierwszą modalną.
+
+## Classic measures
+
+The most popular statistic is **arithmetic mean** or **average** definied by formula:
+
+$$\bar{x}=\frac{\sum\limits_{i=1}^{N}{x_{i}}}{N},$$
+
+where: 
+
+- $\bar{x}$ - symbol of arithmetic mean
+- $x_{i}$ - values, 
+- $N$ - number of observations.
+
+In Excel you can find a function called:
+
+- AVERAGE.
+
+The average is a good measure if we want to compare groups. But what if two students have identical average of grades? Does this mean that their grades are also the same? This can happen, but it is quite rare. Below are the grades for two students who have the same average.
+
+```{r s2, echo=FALSE, fig.height=5, fig.width=8, warning=FALSE, message=FALSE}
+oceny <- data.frame(id=c(rep("Student 1",7), rep("Student 2",7)),
+                    lp=factor(x=rep(c(1:7),2)),
+                    oceny=c(c(3,4,5,3.5,2,4,3),c(3.5,4,3,3,3.5,4,3.5)))
+
+ggplot(oceny, aes(x=lp, y=oceny)) + 
+  geom_point() +
+  geom_hline(yintercept = mean(oceny$oceny), colour = "red") +
+  facet_wrap(~ id) +
+  scale_y_continuous(breaks = c(2,2.5,3,3.5,4,4.5,5)) +
+  xlab("Number of grade") + ylab("Grade") +
+  theme_bw()
+
+n <- 7
+var1 <- round(((n-1)/n)*as.numeric(var(subset(oceny, id=="Student 1")["oceny"])),2)
+var2 <- round(((n-1)/n)*as.numeric(var(subset(oceny, id=="Student 2")["oceny"])),2)
+```
+
+What we can see that the grades of student number 2 are closer to the average. The measure of the dispersion of variable is **variance** given by the formula:
+
+$$s^2=\frac{1}{N}\sum\limits_{i=1}^{N}{(x_{i}-\bar{x})^2}$$
+
+where: 
+
+- $s^2$ - symbol of variance, 
+- $\bar{x}$ - arithmetic mean, 
+- $x_{i}$ - values,
+- $N$ - number of observations.
+
+The first student's grades are `r var1` and the second `r var2`. From this measure we are able to conclude that there is a greater variation in the first student's grade. However, we cannot say how much they differ because we are not able to interpret the variance. This is because the result of the variance is given in squared units, which usually makes no sense.
+
+In Excel there are two functions to calculate variance:
+
+- VAR.P (in equation there is $\frac{1}{N}$),
+- VAR.S (in equation there is $\frac{1}{N-1}$).
+
+Depending on whether we have population or just a sample, we should use an appropriate formula. During the class we assume that we have the entire population and will use the appropriate functions.
+
+The square root of variance i.e. **standard deviation**, allows to determine the variation numerically. It indicates how much the units differ from the average. In the interpretation of the standard deviation we have to remember about the word _average_ appearing twice. The first concerns the mean used in the formula for variance, and the second defines the arithmetic mean calculated earlier.
+
+```{r s, echo=FALSE, fig.height=5, fig.width=8, warning=FALSE, message=FALSE}
+sd1 <- round(sqrt(var1),2)
+sd2 <- round(sqrt(var2),2)
+```
+
+About the first student we say that his grades differ on average from the mean by `r sd1` grade, while the grades of the second student differ on average by `r sd2` grade.
+
+As previous there are two functions for calcuating standard deviation:
+
+- STDEV.P,
+- STDEV.S.
+
+If the averages are the same, a standard deviation is sufficient to evaluate the differentiation. However, the situation becomes more complicated when there are differences between averages. So how do you compare the variation of variables that have different averages and standard deviations?
+
+An experiment was conducted in which 100 people were measured the length of their arms and legs.
+
+```{r v_s, echo=FALSE, fig.height=5, fig.width=8, warning=FALSE, message=FALSE}
+set.seed(100)
+n <- 100
+rece_nogi <- data.frame(obs=c(rep("Length of arm",100), rep("Length of leg",100)),
+                    id=rep(c(1:n),2),
+                    dl=c(round(rnorm(n, 74.75, 9.19),2),round(rnorm(n, 102.84, 11.66),2))) 
+
+rn_stat <- rece_nogi %>%
+  group_by(obs) %>%
+  summarize(sr=mean(dl),
+            sd=sqrt(((n-1)/n)*var(dl)),
+            sk=skewness(dl),
+            ku=kurtosis(dl)+3)
+
+rn <- left_join(rece_nogi, rn_stat)
+
+ggplot(rn, aes(x=id, y=dl)) + 
+  geom_point() +
+  geom_hline(aes(yintercept = sr), colour = "red") +
+  facet_wrap(~ obs) +
+  xlab("Number of person") + ylab("Length (in cm)") +
+  theme_bw()
+
+```
+
+The average leg length was `r round(rn_stat$sr[1],2)` cm and the standard deviation `r round(rn_stat$sd[1],2)` cm. In turn, the average length of the arm was characterized by the value of `r round(rn_stat$sr[2],2)` cm with a standard deviation of `r round(rn_stat$sd[2],2)` cm. Evaluation of the variation of variables with different averages is possible using **classical coefficient of variation**:
+
+$$CV=\frac{s}{\bar{x}}\cdot 100,$$
+
+where: 
+
+- $s$ - standard deviation, 
+- $\bar{x}$ - arithmetic mean.
+
+The coefficient of variation is expressed as a percentage and several contractual thresholds may be adopted:
+
+- 0%-20% - poorly diverse,
+- 21%-40% - moderately diverse,
+- 41%-60% - strongly diverse,
+- over 60% - a very strong diverse.
+
+When calculating the coefficient of variation for leg length, we obtain `r round(rn_stat$sd[1]/rn_stat$sr[1]*100,2)`%, and for arm length `r round(rn_stat$sd[2]/rn_stat$sr[2]*100,2)`%. On this basis, we can conclude that hand length is characterized by greater variation.
+
+The classic coefficient of variation does not have a suitable function programmed in Excel. Instead, you can easily calculate this value.
+
+**The classic asymmetry coefficient** is lso called the third central moment or skewness is expressed by the formula:
+$$\alpha_{3}=\frac{\frac{1}{N}\sum\limits_{i=1}^{N}{(x_{i}-\bar{x})^3}}{s^3},$$
+
+where: 
+
+- $\alpha_{3}$ - symbol of asymmetry coefficient,  
+- $s$ - standard deviation, 
+- $\bar{x}$ - arithmetic mean, 
+- $x_{i}$ - values, 
+- $N$ - number of observations.
+
+It allows us to determine whether the distribution of a variable is:
+
+- symmetric - the distribution is symmetric, $\alpha_{3}=0$,
+- left-skewed - extended left arm of distribution, $\alpha_{3}<0$,
+- right-skewed - extended right arm of distribution, $\alpha_{3}>0$.
+
+The skewness of leg length is `r rn_stat$sk[1]`, which means that the distribution of leg length has a slight right-hand asymmetry.
+
+In Excel there are functions called:
+
+- SKEW
+- SKEW.P
+
+Focusing around the average defines **the classic concentration coefficent**, also known as the fourth central moment or kurtosis:
+
+$$\alpha_{4}=\frac{\frac{1}{N}\sum\limits_{i=1}^{N}{(x_{i}-\bar{x})^4}}{s^4},$$
+
+where: 
+
+- $\alpha_{4}$ - symbol of concentration coefficent,  
+- $s$ - standard deviation, 
+- $\bar{x}$ - arithmetic mean, 
+- $x_{i}$ - values, 
+- $N$ - number of observations.
+
+Allows you to determine whether the distribution of a variable is:
+
+- normal - $\alpha_{4}=3$,
+- flat. The values aren't very concentrated around the average, $\alpha_{4}<3$,
+- slim. The values are heavily concentrated around the average, $\alpha_{4}>3$.
+
+Some programs instead of kurtosis calculate excess kurtosis:
+
+$Ex=\alpha_{4}-3$
+
+Then we interpret the value of this measure by taking 0 as the reference point.
+
+The curtosis for leg length is `r rn_stat$ku[1]+3`, which means that the distribution of leg length is slim.
+
+In Excel there is a function called:
+
+- KURT.
+
+In fact, the result of this function is an excess kurtosis. In the interpretation, therefore, the result is referred to a 0.
+
+## Measures of position
+
+Podstawowe miary pozycyjne nie są obliczane z wykorzystaniem wszystkich obserwacji, jak ma to miejsce w przypadku miar klasycznych, tylko szukamy obserwacji która wskazuje wartość wybranej miary pozycyjnej. Najpopularniejszą z miar pozycyjnych jest **mediana** (kwartyl 2, wartość środkowa, $Q_2$), która wyznacza wartość dla której 50% jednostek zbiorowości ma wartości cechy niższe bądź równe medianie, a 50% równe bądź wyższe od mediany.
+
+Medianę wyznacza się poprzez posortowanie wartości cechy rosnąco i wybór wartości środkowej (jeśli $N$ jest nieparzyste) lub średniej z wartości środkowych (jeśli $N$ jest parzyste).
+
+Zaletą mediany jest mniejsza wrażliwość na obserwacje odstające. Rozważmy przypadek wynagrodzeń w pewnych przedsiębiorstwach:
+
+```{r mediana, echo=FALSE, fig.height=5, fig.width=8, warning=FALSE, message=FALSE}
+
+wynagrodzenia <- data.frame(id=c(rep("Firma A",14), rep("Firma B",14)),
+                    lp=factor(x=rep(c(1:14),2)),
+                    wyn=c(c(2000,2100,2400,2500,2700,2900,3500,3500,3800,3850,4100,4250,4400,5000),
+                          c(2000,2100,2100,2200,2350,2400,2500,2550,2700,2700,4900,4950,5000,5000)))
+
+wyn_stat <- wynagrodzenia %>%
+  group_by(id) %>%
+  summarise(srednia=round(mean(wyn)),
+            mediana=round(median(wyn)),
+            min=round(min(wyn)),
+            q1=round(quantile(wyn, 0.25)),
+            q3=round(quantile(wyn, 0.75)),
+            max=round(max(wyn))) %>%
+  mutate(q=round((q3-q1)/2),
+         vq=round(q/mediana*100),
+         aq=round((q1+q3-2*mediana)/(2*q),2))
+
+wyn_stat$id <- factor(wyn_stat$id, levels = rev(unique(wyn_stat$id)), ordered = T)
+
+wynagrodzenia <- left_join(wynagrodzenia, wyn_stat)
+
+ggplot(wynagrodzenia, aes(x=lp, y=wyn)) + 
+  geom_point() +
+  facet_wrap(~ id) +
+  geom_hline(aes(yintercept = srednia), colour = "red") +
+  geom_hline(aes(yintercept = mediana), colour = "blue") +
+  xlab("Numer pracownika") + ylab("Wynagrodzenie") +
+  theme_bw()
+
+```
+
+W firmie A wynagrodzenia pracowników nie są zróżnicowane, ale nie występują pomiędzy nimi zbyt duże różnice. Średnia pensja (kolor czerwony) wynosi `r wyn_stat$srednia[1]` zł, natomiast mediana (kolor niebieski) odpowiada wynagrodzeniom 7 i 8 pracownika - `r wyn_stat$mediana[1]` zł. Można powiedzieć, że obie wartości dobrze odzwierciedlają realne zarobki pracowników. Z kolei w firmie B nierówności dochodowe są znacznie większe, możliwe że zestawiono wynagrodzenia pracowników szeregowych oraz kadry zarządzającej. Średnia wynosząca `r wyn_stat$srednia[2]` zł nie oddaje prawdziwych zarobków ani pierwszej ani drugiej grupy. Natomiast wartość mediany wynosząca `r wyn_stat$mediana[2]` zł jest bardziej odporna na wartości odstające. Mediana wynagrodzenia w firmie B oznacza, że 50% pracowników otrzymuje pensję w wysokości `r wyn_stat$mediana[2]` zł lub mniej, natomiast drugie 50% zatrudnionych uzyskuje wynagrodzenie w wysokości `r wyn_stat$mediana[2]` zł lub więcej.
+
+W Excelu możemy skorzystać z funkcji:
+
+- MEDIAN(wartości cechy),
+- QUARTILE.INC(wartości cechy, 2).
+
+Mediana podzieliła nam jednostki zbiorowości na dwie połowy. Jeśli podzielimy pierwszą połową ponownie na pół otrzymamy wartość **kwartyla pierwszego (dolnego)**, który informuje, że 25% jednostek zbiorowości ma wartości cechy niższe bądź równe kwartylowi pierwszemu $Q_{1}$, a 75\% równe bądź wyższe od tego kwartyla. Z kolei po podzieleniu drugiej połowy obserwacji uzyskujemy wartość **kwartyla trzeciego (górnego)**, który informuje, że 75\% jednostek zbiorowości ma wartości cechy niższe bądź równe kwartylowi trzeciemu $Q_{3}$, a 25\% równe bądź wyższe od tego kwartyla.
+
+Do wyznaczenia wartości kwartyli w Excelu korzystamy z funkcji:
+
+- QUARTILE.INC(wartości cechy, numer kwartyla),
+
+gdzie numer kwartyla to:
+
+- 0 - minimum,
+- 1 - kwartyl dolny,
+- 2 - mediana,
+- 3 - kwartyl górny,
+- 4 - maksimum.
+
+W firmie A kwartyl dolny wynagrodzeń wyniósł `r wyn_stat$q1[1]` zł, co oznacza, że 25% pracowników uzyskuje pensją równą bądź niższą niż `r wyn_stat$q1[1]` zł, a 75% równą bądź wyższą niż `r wyn_stat$q1[1]`. Z kolei 75% pracowników otrzymuje wynagrodzenie mniejsze lub równe `r wyn_stat$q3[1]` zł, a 25% większe bądź równe `r wyn_stat$q3[1]` zł. W firmie B kwartyl pierwszy jest równy `r wyn_stat$q1[2]` zł, a trzeci `r wyn_stat$q3[2]` zł.
+
+Wartości kwartyli można przedstawić na wykresie pudełkowym (ang. boxplot):
+
+```{r boxplot, echo=FALSE, fig.height=5, fig.width=8, warning=FALSE, message=FALSE}
+
+ggplot(wyn_stat, aes(x = id, ymin = min, lower = q1, middle = mediana, upper = q3, ymax = max)) +
+  geom_boxplot(stat = "identity") +
+  coord_flip() +
+  xlab("") + ylab("Wynagrodzenie") +
+  theme_bw()
+
+```
+
+W miarach pozycyjnych opartych na kwartylach zróżnicowanie wartości od mediany mierzy **odchylenie ćwiartkowe**:
+
+$$Q=\frac{(Q_{3}-Q_{1})}{2}$$
+
+gdzie:
+
+- $Q$ - symbol odchylenia ćwiartkowego, 
+- $Q_{1}$ - kwartyl pierwszy, 
+- $Q_{3}$ - kwartyl trzeci.
+
+Mierzy ono przeciętne odchylenie wartości cechy zbiorowości od mediany u 50% środkowych jednostek - między kwartylem dolnym i górnym. Przykładowo w firmie A przeciętne odchylenie wynagrodzenia od mediany wynosi `r wyn_stat$q[1]` zł.
+
+Zestawienie ochylenia ćwiartkowego oraz mediany pozwala na obliczenie **pozycyjnego współczynnika zmienności**:
+
+$$V_{Q}=\frac{Q}{Q_2} \cdot 100$$
+
+gdzie: 
+
+- $V_{Q}$ - symbol pozycyjnego współczynnika zmienności, 
+- $Q$ - odchylenie ćwiartkowe, 
+- $Q_2$ - mediana.
+
+Podobnie jak w przypadku klasycznego współczynnika zmienności korzystamy z umownych progów dotyczących zróżnicowania. W firmie A pozycyjny współczynnik zmienności był równy `r wyn_stat$vq[1]`% co oznacza, że wynagrodzenia w tej firmie cechowały się umiarkowanym zróżnicowaniem, natomiast w firmie B było to `r wyn_stat$vq[2]`% czyli silne zróżnicowanie wynagrodzeń.
+
+Ostatnią miarą opartą na kwartylach jest **pozycyjny współczynnik asymetrii**, który określa kierunek i siłę asymetrii jednostek znajdujących się między pierwszym i trzecim kwartylem:
+
+$$A_{Q}=\frac{(Q_{1}+Q_{3}-2 \cdot Q_2)}{(2 \cdot Q)}$$
+
+gdzie: 
+
+- $A_{Q}$ --- symbol pozycyjnego współczynnika asymetrii, 
+- $Q_{1}$ --- kwartyl pierwszy, 
+- $Q_{3}$ --- kwartyl trzeci, 
+- $Q_{2}$ --- mediana, 
+- $Q$ --- odchylenie ćwiartkowe.
+
+Interpretacja pozycyjnego współczynnika asymetrii przebiega identycznie jak w przypadku klasycznego współczynnika asymetrii:
+
+- symetryczny - mediana pomiędzy wartościami kwartyli dolnego i górnego, $A_{Q}=0$,
+- lewostronnie asymetryczny - mediana bliżej wartości kwartyla górnego, $A_{Q}<0$,
+- prawostronnie asymetryczny - mediana bliżej wartości kwartyla dolnego, $A_{Q}>0$.
+
+Tę informację możemy także odczytać z wykresu pudełkowego, określając umiejscowienie mediany względem pozostałych kwartyli:
+
+```{r asymetria, echo=FALSE, fig.height=5, fig.width=8, warning=FALSE, message=FALSE}
+
+as <- c("Brak asymetrii", "Asymetria \nlewostronna", "Asymetria \nprawostronna")
+box_sym <- data.frame(x = factor(x = as, levels = rev(as),  ordered = T),
+                      min=c(0,0,0),
+                      q1=c(15,10,15),
+                      q2=c(40,45,35),
+                      q3=c(65,65,70),
+                      max=c(80,80,80))
+
+
+ggplot(box_sym, aes(x = x, ymin = min, lower = q1, middle = q2, upper = q3, ymax = max)) +
+  geom_boxplot(stat = "identity") +
+  coord_flip() +
+  xlab("") + ylab("") +
+  theme_bw()
+
+```
+
+W firmie A pozycyjny współczynnik asymetrii był równy `r wyn_stat$aq[1]`, co pociąga za sobą informację o asymetrii lewostronnej, natomiast w firmie B występowała asymetria prawostronna (`r wyn_stat$aq[2]`). 
