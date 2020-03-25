@@ -12,29 +12,21 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Descriptive statistics
 
-**Kompleksowa analiza struktury** oznacza wyczerpujący opis cech zbiorowości statystycznej. Do charakterystyk najczęściej wykorzystywanych przy opisie struktury zbiorowości należą:
+In descriptive analysis of variable we need to calculate few measures:
 
-- miary przeciętne - służące do określania tej wartości zmiennej opisanej przez rozkład, wokół której skupiają się pozostałe wartości zmiennej,
-- miary rozproszenia (dyspersji) - służące do badania stopnia zróżnicowania wartości zmiennej,
-- miary asymetrii - służące do badania asymetrii rozkładu,
-- miary koncentracji - służące do analizy stopnia skupienia poszczególnych jednostek wokół średniej.
+- measures of average - used to determine that value of the variable described by the distribution around which the remaining values of the variable are concentrated,
+- measures of dispersion - for testing the degree of variability of the variable,
+- measures of asymmetry - to study asymmetry of distribution,
+- measures of concentration - to analyse the degree of concentration of individual units around the average.
 
-Analiza struktury bazuje na dwóch typach miar:
+There are two types of measures:
 
-- miary klasyczne - obliczane na podstawie wszystkich obserwacji,
-- miary pozycyjne - wartość miary wskazuje dana jednostka.
+- classical measures - calculated based on all observations,
+- measures of position - the value of the measure is indicated by the unit.
 
-Celem analizy struktury jest dostarczenie kilku liczb, które w łatwy sposób pozwolą na opis i porównania badanych cech.
+The aim of the analysis of the structure is to provide a few numbers, which will allow for easy description and comparison of the examined variables.
 
-**Dominanta** czyli najczęściej występująca wartość. Inaczej moda, modalna, tryb (w Excelu - kalka językowa z angielskiego słowa _mode_. Wartość dominanty można ustalić jedynie dla rozkładów jednomodalnych. 
-
-W Excelu jest funkcja:
-
-- WYST.NAJCZĘSĆIEJ,
-
-jednak dla rozkładów wielomodalnych zwróci ona pierwszą modalną.
-
-## Classic measures
+## Classical measures
 
 The most popular statistic is **arithmetic mean** or **average** definied by formula:
 
@@ -48,7 +40,7 @@ where:
 
 In Excel you can find a function called:
 
-- AVERAGE.
+- AVERAGE(values).
 
 The average is a good measure if we want to compare groups. But what if two students have identical average of grades? Does this mean that their grades are also the same? This can happen, but it is quite rare. Below are the grades for two students who have the same average.
 
@@ -101,8 +93,8 @@ About the first student we say that his grades differ on average from the mean b
 
 As previous there are two functions for calcuating standard deviation:
 
-- STDEV.P,
-- STDEV.S.
+- STDEV.P(values),
+- STDEV.S(values).
 
 If the averages are the same, a standard deviation is sufficient to evaluate the differentiation. However, the situation becomes more complicated when there are differences between averages. So how do you compare the variation of variables that have different averages and standard deviations?
 
@@ -174,8 +166,8 @@ The skewness of leg length is `r rn_stat$sk[1]`, which means that the distributi
 
 In Excel there are functions called:
 
-- SKEW
-- SKEW.P
+- SKEW(values),
+- SKEW.P(values).
 
 Focusing around the average defines **the classic concentration coefficent**, also known as the fourth central moment or kurtosis:
 
@@ -205,21 +197,21 @@ The curtosis for leg length is `r rn_stat$ku[1]+3`, which means that the distrib
 
 In Excel there is a function called:
 
-- KURT.
+- KURT(values).
 
 In fact, the result of this function is an excess kurtosis. In the interpretation, therefore, the result is referred to a 0.
 
 ## Measures of position
 
-Podstawowe miary pozycyjne nie są obliczane z wykorzystaniem wszystkich obserwacji, jak ma to miejsce w przypadku miar klasycznych, tylko szukamy obserwacji która wskazuje wartość wybranej miary pozycyjnej. Najpopularniejszą z miar pozycyjnych jest **mediana** (kwartyl 2, wartość środkowa, $Q_2$), która wyznacza wartość dla której 50% jednostek zbiorowości ma wartości cechy niższe bądź równe medianie, a 50% równe bądź wyższe od mediany.
+Basic positional measures are not calculated using all observations, as is the case of classical measures, but we look for an observation that indicates the value of the selected positional measure. The most popular positional measure is **median** (quartile 2, middle value, $Q_2$), which determines the value for which 50% of the observations have values lower or equal to the median and 50% equal or greater than the median.
 
-Medianę wyznacza się poprzez posortowanie wartości cechy rosnąco i wybór wartości środkowej (jeśli $N$ jest nieparzyste) lub średniej z wartości środkowych (jeśli $N$ jest parzyste).
+The median is determined by sorting the value of the variable in ascending order and selecting the middle value (if $N$ is odd) or the average of the middle values (if $N$ is even).
 
-Zaletą mediany jest mniejsza wrażliwość na obserwacje odstające. Rozważmy przypadek wynagrodzeń w pewnych przedsiębiorstwach:
+The advantage of the median is that it is less sensitive to outlying observations. Consider the case of wages in two companies:
 
 ```{r mediana, echo=FALSE, fig.height=5, fig.width=8, warning=FALSE, message=FALSE}
 
-wynagrodzenia <- data.frame(id=c(rep("Firma A",14), rep("Firma B",14)),
+wynagrodzenia <- data.frame(id=c(rep("Company A",14), rep("Company B",14)),
                     lp=factor(x=rep(c(1:14),2)),
                     wyn=c(c(2000,2100,2400,2500,2700,2900,3500,3500,3800,3850,4100,4250,4400,5000),
                           c(2000,2100,2100,2200,2350,2400,2500,2550,2700,2700,4900,4950,5000,5000)))
@@ -245,97 +237,97 @@ ggplot(wynagrodzenia, aes(x=lp, y=wyn)) +
   facet_wrap(~ id) +
   geom_hline(aes(yintercept = srednia), colour = "red") +
   geom_hline(aes(yintercept = mediana), colour = "blue") +
-  xlab("Numer pracownika") + ylab("Wynagrodzenie") +
+  xlab("Number of employee") + ylab("Salary") +
   theme_bw()
 
 ```
 
-W firmie A wynagrodzenia pracowników nie są zróżnicowane, ale nie występują pomiędzy nimi zbyt duże różnice. Średnia pensja (kolor czerwony) wynosi `r wyn_stat$srednia[1]` zł, natomiast mediana (kolor niebieski) odpowiada wynagrodzeniom 7 i 8 pracownika - `r wyn_stat$mediana[1]` zł. Można powiedzieć, że obie wartości dobrze odzwierciedlają realne zarobki pracowników. Z kolei w firmie B nierówności dochodowe są znacznie większe, możliwe że zestawiono wynagrodzenia pracowników szeregowych oraz kadry zarządzającej. Średnia wynosząca `r wyn_stat$srednia[2]` zł nie oddaje prawdziwych zarobków ani pierwszej ani drugiej grupy. Natomiast wartość mediany wynosząca `r wyn_stat$mediana[2]` zł jest bardziej odporna na wartości odstające. Mediana wynagrodzenia w firmie B oznacza, że 50% pracowników otrzymuje pensję w wysokości `r wyn_stat$mediana[2]` zł lub mniej, natomiast drugie 50% zatrudnionych uzyskuje wynagrodzenie w wysokości `r wyn_stat$mediana[2]` zł lub więcej.
+In Company A, the salaries of employees are not diverse and there are not too big differences between them. The average salary (red) is `r wyn_stat$mediana[1]` PLN, while the median (blue) corresponds to the salaries of 7 and 8 employees - `r wyn_stat$mediana[1]` PLN. It can be said that both values reflect well the real earnings of employees. In turn, in company B the income inequalities are much greater, it is possible that the salaries of low-level employees and managers were compared. The average of `r wyn_stat$srednia[2]` PLN does not reflect the real earnings of either the first or second group. On the other hand, the median value of `r wyn_stat$mediana[2]` PLN is more resistant to outliers. The median salary in company B means that 50% of the employees receive a salary of `r wyn_stat$mediana[2]` PLN or less, while the other 50% of the employees receive a salary of `r wyn_stat$mediana[2]` PLN or more.
 
-W Excelu możemy skorzystać z funkcji:
+In Excel:
 
-- MEDIAN(wartości cechy),
-- QUARTILE.INC(wartości cechy, 2).
+- MEDIAN(values),
+- QUARTILE.INC(values, 2).
 
-Mediana podzieliła nam jednostki zbiorowości na dwie połowy. Jeśli podzielimy pierwszą połową ponownie na pół otrzymamy wartość **kwartyla pierwszego (dolnego)**, który informuje, że 25% jednostek zbiorowości ma wartości cechy niższe bądź równe kwartylowi pierwszemu $Q_{1}$, a 75\% równe bądź wyższe od tego kwartyla. Z kolei po podzieleniu drugiej połowy obserwacji uzyskujemy wartość **kwartyla trzeciego (górnego)**, który informuje, że 75\% jednostek zbiorowości ma wartości cechy niższe bądź równe kwartylowi trzeciemu $Q_{3}$, a 25\% równe bądź wyższe od tego kwartyla.
+The median divided our observations into two halves. If we divide the first half into halves again, we get the value of the **first (lower) quartile**, which indicates that 25% of the observations have values lower or equal to the first quartile $Q_{1}$ and 75% equal or higher than this quartile. After dividing the second half of the observations we get the value of the **third (upper) quartile**, which indicates that 75% of the observations have values lower than or equal to the third quartile $Q_{3}$ and 25% equal to or higher than this quartile.
 
-Do wyznaczenia wartości kwartyli w Excelu korzystamy z funkcji:
+We use a function to determine the quartile values in Excel:
 
-- QUARTILE.INC(wartości cechy, numer kwartyla),
+- QUARTILE.INC(values, number of quartile),
 
-gdzie numer kwartyla to:
+where number of quartile:
 
 - 0 - minimum,
-- 1 - kwartyl dolny,
-- 2 - mediana,
-- 3 - kwartyl górny,
-- 4 - maksimum.
+- 1 - first quartile,
+- 2 - median,
+- 3 - third quartile,
+- 4 - maximum.
 
-W firmie A kwartyl dolny wynagrodzeń wyniósł `r wyn_stat$q1[1]` zł, co oznacza, że 25% pracowników uzyskuje pensją równą bądź niższą niż `r wyn_stat$q1[1]` zł, a 75% równą bądź wyższą niż `r wyn_stat$q1[1]`. Z kolei 75% pracowników otrzymuje wynagrodzenie mniejsze lub równe `r wyn_stat$q3[1]` zł, a 25% większe bądź równe `r wyn_stat$q3[1]` zł. W firmie B kwartyl pierwszy jest równy `r wyn_stat$q1[2]` zł, a trzeci `r wyn_stat$q3[2]` zł.
+In Company A, the lower quartile of wage was `r wyn_stat$q1[1]` PLN, which means that 25% of employees earn wages equal to or less than `r wyn_stat$q1[1]` PLN, and 75% equal to or more than `r wyn_stat$q1[1]`. Conversely, 75% of employees are paid less than or equal to `r wyn_stat$q3[1]` PLN, and 25% are paid more than or equal to `r wyn_stat$q3[1]` PLN. In Company B, the first quartile equals `r wyn_stat$q1[2]` PLN, and the third `r wyn_stat$q3[2]` PLN.
 
-Wartości kwartyli można przedstawić na wykresie pudełkowym (ang. boxplot):
+Quartile values can be shown in the boxplot:
 
 ```{r boxplot, echo=FALSE, fig.height=5, fig.width=8, warning=FALSE, message=FALSE}
 
 ggplot(wyn_stat, aes(x = id, ymin = min, lower = q1, middle = mediana, upper = q3, ymax = max)) +
   geom_boxplot(stat = "identity") +
   coord_flip() +
-  xlab("") + ylab("Wynagrodzenie") +
+  xlab("") + ylab("Salary") +
   theme_bw()
 
 ```
 
-W miarach pozycyjnych opartych na kwartylach zróżnicowanie wartości od mediany mierzy **odchylenie ćwiartkowe**:
+In positional measures, the variation from median measures **quartile deviation**:
 
 $$Q=\frac{(Q_{3}-Q_{1})}{2}$$
 
-gdzie:
+where:
 
-- $Q$ - symbol odchylenia ćwiartkowego, 
-- $Q_{1}$ - kwartyl pierwszy, 
-- $Q_{3}$ - kwartyl trzeci.
+- $Q$ - symbol of quartile deviation, 
+- $Q_{1}$ - first quartile, 
+- $Q_{3}$ - third quartile.
 
-Mierzy ono przeciętne odchylenie wartości cechy zbiorowości od mediany u 50% środkowych jednostek - między kwartylem dolnym i górnym. Przykładowo w firmie A przeciętne odchylenie wynagrodzenia od mediany wynosi `r wyn_stat$q[1]` zł.
+It measures the average deviation of the value of a community feature from the median in 50% of the middle units - between the lower and upper quartile. For example, in company A, the average deviation from the median is `r wyn_stat$q[1]` PLN.
 
-Zestawienie ochylenia ćwiartkowego oraz mediany pozwala na obliczenie **pozycyjnego współczynnika zmienności**:
+The combination of the quartile deviation and the median allows to calculate the **positional coefficient of variation**:
 
 $$V_{Q}=\frac{Q}{Q_2} \cdot 100$$
 
-gdzie: 
+where: 
 
-- $V_{Q}$ - symbol pozycyjnego współczynnika zmienności, 
-- $Q$ - odchylenie ćwiartkowe, 
-- $Q_2$ - mediana.
+- $V_{Q}$ - symbol of positional coefficient of variation, 
+- $Q$ - quartile deviation, 
+- $Q_2$ - median.
 
-Podobnie jak w przypadku klasycznego współczynnika zmienności korzystamy z umownych progów dotyczących zróżnicowania. W firmie A pozycyjny współczynnik zmienności był równy `r wyn_stat$vq[1]`% co oznacza, że wynagrodzenia w tej firmie cechowały się umiarkowanym zróżnicowaniem, natomiast w firmie B było to `r wyn_stat$vq[2]`% czyli silne zróżnicowanie wynagrodzeń.
+As in the case of the classic coefficient of variation, we use contractual thresholds. In company A, the positional coefficient of variation was equal to `r wyn_stat$vq[1]`%, which means that salaries in this company were characterised by moderate variation, while in company B it was `r wyn_stat$vq[2]`%, which means a strong variation in salaries.
 
-Ostatnią miarą opartą na kwartylach jest **pozycyjny współczynnik asymetrii**, który określa kierunek i siłę asymetrii jednostek znajdujących się między pierwszym i trzecim kwartylem:
+The last measure based on quartiles is the **positional asymmetry coefficient**, which determines the direction and strength of the asymmetry of units between the first and third quartiles:
 
 $$A_{Q}=\frac{(Q_{1}+Q_{3}-2 \cdot Q_2)}{(2 \cdot Q)}$$
 
-gdzie: 
+where: 
 
-- $A_{Q}$ --- symbol pozycyjnego współczynnika asymetrii, 
-- $Q_{1}$ --- kwartyl pierwszy, 
-- $Q_{3}$ --- kwartyl trzeci, 
-- $Q_{2}$ --- mediana, 
-- $Q$ --- odchylenie ćwiartkowe.
+- $A_{Q}$ - symbol of positional asymmetry coefficient, 
+- $Q_{1}$ - first quartile, 
+- $Q_{3}$ - third quartile, 
+- $Q_{2}$ - median, 
+- $Q$ - quartile deviation.
 
-Interpretacja pozycyjnego współczynnika asymetrii przebiega identycznie jak w przypadku klasycznego współczynnika asymetrii:
+The interpretation of the positional asymmetry coefficent is identical to the classical asymmetry coefficent:
 
-- symetryczny - mediana pomiędzy wartościami kwartyli dolnego i górnego, $A_{Q}=0$,
-- lewostronnie asymetryczny - mediana bliżej wartości kwartyla górnego, $A_{Q}<0$,
-- prawostronnie asymetryczny - mediana bliżej wartości kwartyla dolnego, $A_{Q}>0$.
+- symmetrical - the median between the values of the lower and upper quartile, $A_{Q}=0$,
+- left-skewed - median closer to the upper quartile, $A_{Q}<0$,
+- right-skewed - median closer to the lower quartile, $A_{Q}>0$.
 
-Tę informację możemy także odczytać z wykresu pudełkowego, określając umiejscowienie mediany względem pozostałych kwartyli:
+This information can also be read from the boxplot, determining the location of the median relative to the other quartiles:
 
 ```{r asymetria, echo=FALSE, fig.height=5, fig.width=8, warning=FALSE, message=FALSE}
 
-as <- c("Brak asymetrii", "Asymetria \nlewostronna", "Asymetria \nprawostronna")
+as <- c("Symmetrical", "Left-skewed", "Right-skewed")
 box_sym <- data.frame(x = factor(x = as, levels = rev(as),  ordered = T),
                       min=c(0,0,0),
                       q1=c(15,10,15),
-                      q2=c(40,45,35),
+                      q2=c(40,55,30),
                       q3=c(65,65,70),
                       max=c(80,80,80))
 
@@ -348,4 +340,4 @@ ggplot(box_sym, aes(x = x, ymin = min, lower = q1, middle = q2, upper = q3, ymax
 
 ```
 
-W firmie A pozycyjny współczynnik asymetrii był równy `r wyn_stat$aq[1]`, co pociąga za sobą informację o asymetrii lewostronnej, natomiast w firmie B występowała asymetria prawostronna (`r wyn_stat$aq[2]`). 
+In company A, the positional asymmetry coefficient was equal to `r wyn_stat$aq[1]`, which informs about left-handed asymmetry, while in company B, there was right-handed asymmetry (`r wyn_stat$aq[2]`).
