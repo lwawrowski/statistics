@@ -1,0 +1,104 @@
+---
+title: "Association between two categorical variables"
+author: "Łukasz Wawrowski"
+output: html_document
+---
+
+**What is the strength of relationship between the result of the exam and gender?**
+
+The purpose of association analysis is to determine the strength of the relationship between two categorical variables.
+
+The basis for such an analysis is a contingency table or a cross table. At the intersection of columns with rows, the numbers of statistical population units should be entered, in which the simultaneous occurrence of the specified value of $ x_ {i} $ and $ y_ {i} $ was observed. The general form of the cross table is as follows:
+
+| variable X / variable Y | $y_{1}$ | $y_{2}$ | $\cdots$ | $y_{j}$ | $\cdots$ | $y_{r}$ | $\sum\limits_{j}$ |
+|---|---|---|---|---|---|---|---|
+| $x_{1}$  |  $n_{11}$  | $n_{12}$  | $\cdots$  | $n_{1j}$  | $\cdots$  | $n_{1r}$   | $n_{1.}$  |
+| $x_{2}$  | $n_{21}$   |$n_{22}$    |$\cdots$  |  $n_{2j}$ | $\cdots$    |$n_{2r}$  | $n_{2.}$  |
+| $\cdots$  | $\cdots$  |$\cdots$   | $\cdots$  | $\cdots$  | $\cdots$  | $\cdots$  | $\cdots$  |
+| $x_{i}$   | $n_{i1}$  | $n_{i2}$  |$\cdots$ |  $n_{ij}$   |  $\cdots$  | $n_{ir}$  | $n_{i.}$   |
+| $\cdots$  | $\cdots$  | $\cdots$  | $\cdots$  | $\cdots$  | $\cdots$  | $\cdots$  | $\cdots$  |
+| $x_{k}$   | $n_{k1}$  | $n_{k2}$  |  $\cdots$ | $n_{kj}$  | $\cdots$  |   $n_{kr}$ | $n_{k.}$  |
+| $\sum\limits_{i}$  | $n_{.1}$  | $n_{.2}$  | $\cdots$  | $n_{.j}$  |$\cdots$   |  $n_{.r}$ | $n$  |
+
+As the table shows, the variable $X$ has $k$ variants (i = 1,2, ..., k), and the variable $Y$ has $r$ variants (j = 1,2, ..., r).
+
+The symbol $n_{.j}$ denotes the number of units that have the variant $y_{j}$ of the variable Y, while the symbol $n_{i.}$ - the number of units that have the variant $x_{i}$ of the variable X. Symbol $n_{ij}$ denotes the number of units that have the variant $x_{i}$ of X and variant $y_{j}$ of Y at the same time. The symbol $n$ indicates the sum of all observations, where:
+
+$$n=\sum\limits_{i=1}^{k}{n_{i.}}=\sum\limits_{j=1}^{r}{n_{.j}}=\sum\limits_{i=1}^{k}\sum\limits_{j=1}^{r}{n_{ij}}$$
+
+In our example we have information about 500 students about the result of exam and gender. Cross table created based on these data is below:
+
+| Gender / Result | Not passed | Passed | Total |
+|--------------|----------:|------:|-----:|
+| Male    |       100 |    70 |  170 |
+| Female      |       130 |   200 |  330 |
+| Total         |       230 |   270 |  500 |
+
+To measure the strength of association between these two variables we need to calculate chi-square statistic ($\chi^2$) and V-Cramer measure of association.
+
+In first step we need to calculate **expected cell counts**. Expected counts are the projected frequencies in each cell if there is no association between the variables. The formula is given below:
+
+$$\hat{n}_{ij}=\frac{n_{i.} \cdot n_{.j}}{n}$$
+
+For example, the expected cell count for men who did not pass the exam is the product of the number of all men and the number of all who did not pass divided by number of all observations:
+
+$$\hat{n}_{11}=\frac{170 \cdot 230}{500}=78,2$$
+
+Expected cell counts in the table:
+
+| Gender / Result | Not passed | Passed | Total |
+|--------------|----------:|------:|-----:|
+| Male    |      78,2 |  91,8 |  170 |
+| Female      |     151,8 | 178,2 |  330 |
+| Total         |       230 |   270 |  500 |
+
+Expected counts do not have to be integer values, but the sum in the row, column and for the entire cross table must remain the same.
+
+In the next step, we calculate **standard difference coefficients** between expected and observed frequencies. The sum of these coefficients will give us the value of **$\chi^2$ statistic**.
+
+$$\chi^{2}=\sum\limits_{i=1}^{k}\sum\limits_{j=1}^{r}{\frac{(n_{ij}-\hat{n}_{ij})^2}{\hat{n}_{ij}}}$$
+
+where:
+
+- $r$ - number of variants in Y variable,
+- $k$ - number of variants in X variable,
+- $n_{ij}$ - observed counts,
+- $\hat{n}_{ij}$ - expected counts.
+
+Let's calculate $\chi^2$ statistic for our example:
+
+$$\chi^{2}=\frac{(100-78,2)^2}{78,2}+\frac{(70-91,8)^2}{91,8}+\frac{(130-151,8)^2}{151,8}+\frac{(200-178,2)^2}{178,2}=17$$
+
+If we have a table of 2x2 dimensions, we can use a simpler way of determining the $\chi^2$ statistic. If the contingency table is in the form:
+
+| variable X / variable Y  | $y_{1}$  |  $y_{2}$  | $n_{i.}$  |
+|---|---|---|---|
+| $x_{1}$   |  a   |   b  |  a+b |
+| $x_{2}$   |  c   |   d  |  c+d |
+| $n_{.j}$  | a+c  |  b+d |   n  |
+
+then $\chi^2$ can be calculated as follows:
+
+$$\chi^{2}=\frac{n \cdot (a \cdot d - b \cdot c)^2}{(a+b) \cdot (c+d) \cdot (a+c) \cdot (b+d)}$$
+
+Value for our example is the same as in standard procedure of calculations.
+
+$$\chi^2=\frac{500\cdot(100\cdot200-70\cdot130)^2}{170\cdot330\cdot230\cdot270}=\frac{59405000000}{3483810000}=17$$
+
+The value of chi-square statistic does not indicate the strength of the relationship between the analyzed variables. To determine the strength of dependence, we must calculate the measure of association strength - **V-Cramer coefficient**:
+
+$$V=\sqrt{\frac{\chi^2}{n \cdot min(k-1,r-1)}}$$
+where: 
+
+- $\chi^2$ - chi-square statistic,
+- $n$ - sum of all observations,
+- $r$ - number of variants in Y variable,
+- $k$ - number of variants in X variable,
+
+It is standarized in interval from 0 to 1 and we can set certain thresholds for the interpretation of this measure:
+
+- from 0,00 to 0,29 - weak relationship,
+- from 0,30 to 0,49 - moderate relationship,
+- from 0,50 to 1,00 - strong relationship.
+
+In our case V-Cramer coefficent is equal $V=0,18$, which means that there is a weak relationship between gender and exam result.
