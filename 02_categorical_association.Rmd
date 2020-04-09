@@ -8,7 +8,7 @@ output: html_document
 
 The purpose of association analysis is to determine the strength of the relationship between two categorical variables.
 
-The basis for such an analysis is a contingency table or a cross table. At the intersection of columns with rows, the numbers of statistical population units should be entered, in which the simultaneous occurrence of the specified value of $ x_ {i} $ and $ y_ {i} $ was observed. The general form of the cross table is as follows:
+The basis for such an analysis is a contingency table or a cross table. At the intersection of columns with rows, the numbers of statistical population units should be entered, in which the simultaneous occurrence of the specified value of $x_{i}$ and $y_{i}$ was observed. The general form of the cross table is as follows:
 
 | variable X / variable Y | $y_{1}$ | $y_{2}$ | $\cdots$ | $y_{j}$ | $\cdots$ | $y_{r}$ | $\sum\limits_{j}$ |
 |---|---|---|---|---|---|---|---|
