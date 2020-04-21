@@ -1,0 +1,110 @@
+---
+title: "Linear correlation"
+author: "Łukasz Wawrowski"
+output: html_document
+---
+
+In contrast to categorical variables, in the case of continuous variables, in addition to the strength of the relationship, we also determine the direction of this relationship between two variables. Strongly correlated variables behave "as if they were moving simultaneously".
+
+Let's check if the number of customers is correlated with sales in store number 1. The first step in the correlation analysis is to create a scatter plot:
+
+```{r ross-scatter, echo=FALSE, fig.height=5, fig.width=8, warning=FALSE, message=FALSE}
+library(tidyverse)
+
+load("data/dane.RData")
+
+rossmann_1 <- rossmann %>% 
+  filter(sklep_id == 1, czy_otwarty == "Tak")
+
+ggplot(rossmann_1, aes(x=sprzedaz, y=liczba_klientow)) + 
+  geom_point() +
+  xlab("Sales (in EUR)") + ylab("Number of clients") +
+  theme_bw()
+
+sr_sprzedaz <- mean(rossmann_1$sprzedaz)
+sr_liczba_klientow <- mean(rossmann_1$liczba_klientow)
+
+cov <- mean((rossmann_1$sprzedaz-sr_sprzedaz)*(rossmann_1$liczba_klientow-sr_liczba_klientow))
+
+```
+
+On this basis, we can already conclude that the relationship is positive - the increase in the value of one variable entails an increase in the value of the other:
+
+- As the temperature goes up, ice cream sales also go up.
+- As her salary increased, so did her spending.
+- The less time I spend marketing my business, the fewer new customers I will have.
+
+[More examples](https://examples.yourdictionary.com/positive-correlation-examples.html)
+
+A negative correlation would be found when the values of one variable increase and the values of the other decrease:
+
+- A student who has many absences has a decrease in grades.
+- If a train increases speed, the length of time to get to the final point decreases.
+- As the temperature decreases, more heaters are purchased.
+
+[More examples](https://examples.yourdictionary.com/negative-correlation-examples.html)
+
+The numerical value that determines the direction of the correlation is **covariance**. Determination of covariance consists in calculating the differences between the values of both variables from the average, and then multiplying and averaging them according to the formula:
+
+$$cov(x,y)=cov(y,x)=\frac{1}{n}\sum\limits_{i=1}^{n}{(x_{i}-\bar{x})\cdot(y_{i}-\bar{y})}$$
+
+The covariance sign determines the direction of the relationship, which is determined by the product of the differences between the mean values and the analyzed variables. Positive and negative values are summed up, as shown in the chart below:
+
+```{r echo=FALSE}
+ggplot(rossmann_1, aes(x=sprzedaz, y=liczba_klientow)) + 
+  geom_vline(xintercept = sr_sprzedaz, color = "red", size = 1.1) +
+  geom_hline(yintercept = sr_liczba_klientow, color = "green", size = 1.1) +
+  annotate("text", x = 3500, y = 430, label = "+", color = "blue", size = 40, alpha = 0.4) +
+  annotate("text", x = 3500, y = 800, label = "-", color = "blue", size = 40, alpha = 0.4) +
+  annotate("text", x = 7000, y = 430, label = "-", color = "blue", size = 40, alpha = 0.4) +
+  annotate("text", x = 7000, y = 800, label = "+", color = "blue", size = 40, alpha = 0.4) +
+  annotate("text", x = sr_sprzedaz+720, y = 1100, label = "average sales", color = "red") +
+  annotate("text", x = 8650, y = sr_liczba_klientow+30, label = "average number of clients", color = "green") +
+  geom_point() +
+  xlab("Sales (in EUR)") + ylab("Number of clients") +
+  theme_bw()
+```
+
+If covariance is:
+
+- $cov(x,y)=0$ --- no correlation,
+- $cov(x,y)<0$ --- negative correlation,
+- $cov(x,y)>0$ --- positive correlation.
+
+For store number 1, the covariance is `r round(cov)`, which obviously entails a positive relationship. On the basis of the covariance we can not determine the strength of the relationship because it is determined in strange units - EUR multiplied by people. Besides, it can take values from the whole range of real numbers: $(-\infty;+\infty)$.
+
+Standardizing covariance using the standard deviation of each variable we get **Pearson correlation coefficient**:
+
+$$r_{xy}=r_{yx}=\frac{cov(X,Y)}{S_{x}\cdot S_{y}}$$
+
+or
+
+$$r_{xy}=\frac{\sum\limits_{i=1}^{n}{(x_{i}-\bar{x})\cdot(y_{i}-\bar{y})}}{\sqrt{\sum\limits_{i=1}^{n}{(x_{i}-\bar{x})^2\cdot(y_{i}-\bar{y})^2}}}$$
+
+This coefficient is a normalized value, takes values from $r\in<-1;1>$.
+
+If:
+
+- $r_{xy}=1$ --- perfect positive correlation,
+- $0<r_{xy}<1$ --- weak/moderate/strong positive correlation,
+- $r_{xy}=0$ --- no correlation,
+- $-1<r_{xy}<0$ --- weak/moderate/strong negative correlation,
+- $r_{xy}=-1$ --- perfect negative correlation.
+
+In store number 1 Pearon's correlation coefficient is `r round(cor(rossmann_1$sprzedaz, rossmann_1$liczba_klientow),2)`, which means that there is a strong positive linear correlation between sales and number of customers.
+
+If outliers are included in the set of analyzed features which disturb the linearity of the relation, the linear correlation coefficient may not fulfill its function. Then use the **Spearman's rank correlation coefficient**, which is Pearson's linear correlation coefficient but calculated on **ranks**. 
+
+Ranking consists in sorting the value of one attribute in ascending order - assigning successive values from $1$ to $n$ (as in sport), then repeating the operation for the other attribute. If some value is going to be repeated (_ex aequo_), then we determine the value, i.e. the rank of the bond - arithmetic mean from the rank of this value.
+
+Only Pearson's linear correlation coefficient can be determined in Excel using the function:
+
+- PEARSON(array1, array2).
+
+Correlation does not mean causality - it only informs about coexistence of variables. Regression methods are used for cause-effect analysis.
+
+[Few additional information](https://www.mathsisfun.com/data/correlation.html)
+
+[Spurious correlations](https://www.tylervigen.com/spurious-correlations)
+
+[Game - guess the correlation](http://guessthecorrelation.com/)
