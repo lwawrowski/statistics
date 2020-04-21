@@ -11,6 +11,8 @@ Let's check if the number of customers is correlated with sales in store number 
 ```{r ross-scatter, echo=FALSE, fig.height=5, fig.width=8, warning=FALSE, message=FALSE}
 library(tidyverse)
 
+options(scipen = 999)
+
 load("data/dane.RData")
 
 rossmann_1 <- rossmann %>% 
