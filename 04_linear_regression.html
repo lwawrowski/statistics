@@ -471,6 +471,194 @@ a_{1}=\frac{\sum\limits_{i=1}^{n}{(x_{i}-\bar{x})(y_{i}-\bar{y})}}{\sum\limits_{
 <p>In our example, an increase in the number of customers by 1 person will result in an average sales increase of 10.45 EUR.</p>
 <p>The intercept (<span class="math inline">\(a_0\)</span>) is the value of the dependent variable (y), if the value of the independent variable (x) is 0. Special care should be taken when interpreting this coefficient, because it is often meaningless. If x variable never is equal to 0, there is no interest in the intercept.</p>
 <p>In the analyzed example, the <span class="math inline">\(a_0\)</span> coefficient indicates that with zero customers, sales in store 1 will be -1091,22 euros, which have no sense.</p>
+<div id="regression-assessment" class="section level2">
+<h2>Regression assessment</h2>
+<p>Another element of the regression analysis is the assessment of model fitting. For this purpose, we use several measures.</p>
+<p>The first measure that describes fitting the regression function to the empirical data is the <strong>standard error of the regression</strong>, which is the square root of the sum of the squares of the residuals divided by the number of observations minus 2. This reduction of the denominator is due to the fact that in the model we we use 2 means to estimate the slope coefficient (the mean of y and x), which we take into account in this way. Formally this can be written as follows:</p>
+<p><span class="math display">\[S_{u}=\sqrt{\frac{\sum\limits_{i=1}^{n}{(y_{i}-\hat{y}_{i})^2}}{n-2}}\]</span> or</p>
+<p><span class="math display">\[S_{u}=\sqrt{\frac{\sum\limits_{i=1}^{n}{u_i^2}}{n-2}}\]</span></p>
+<p>The standard error of the regression represents the average distance that the observed values fall from the regression line. Conveniently, it tells you how wrong the regression model is on average using the units of the dependent variable. Smaller values are better because it indicates that the observations are closer to the fitted line.</p>
+<p>In the analyzed case we can state that the known sales values deviate from the theoretical values by an average of <span class="math inline">\(+/-\)</span> 351,57 EUR.</p>
+<p>The standard error of the regression is also a measure of forecast error. For example, we want to check how mushc sales will be obtain when there are 1000 customers. After substituting this value for the regression function we will get it:</p>
+<p><span class="math display">\[y_{1000}=10,45 \cdot 1000 - 1091,22=9358,78\]</span></p>
+<p>On this basis, we conclude that with 1,000 customers, the sales forecast would be EUR 9358,78 <span class="math inline">\(+/-\)</span> 351,57.</p>
+<p>An equally important measure of fitting the regression function to the empirical data is the <strong>coefficient of determination</strong> or more commonly, the <strong>R- squared</strong>. The definition of R-squared is fairly straight-forward; it is the percentage of the dependent variable variation that is explained by a linear model.</p>
+<p>R-squared is explained variation divided by total variation which can be formally written as:</p>
+<p><span class="math display">\[R^2=1-\frac{\sum\limits_{i=1}^{n}{(y_{i}-\hat{y}_{i})^2}}{\sum\limits_{i=1}^{n}{(y_{i}-\bar{y}_{i})^2}}\]</span></p>
+<p>or as the square of Pearson coefficient of correlation:</p>
+<p><span class="math display">\[R^2=r_{xy}^2\]</span></p>
+<p>It determines what percentage of variable variance is explained by the regression function. <span class="math inline">\(R^2\)</span> takes values from <span class="math inline">\(&lt;0;1&gt;\)</span> (<span class="math inline">\(&lt;0\%;100\%&gt;\)</span>). In general, the higher the R-squared, the better the model fits your data.</p>
+<p>The regression model we are analyzing is very good: <span class="math inline">\(R^2=0,89\)</span>, which means that the estimated regression model explains 89% of sales variation.</p>
+<p>The opposite of the coefficient of determination <span class="math inline">\(R^2\)</span> is the <strong>coefficient of non-determination</strong>. This measure can be determined using the formula:</p>
+<p><span class="math display">\[\varphi^2=\frac{\sum\limits_{i=1}^{n}{(y_{i}-\hat{y}_{i})^2}}{\sum\limits_{i=1}^{n}{(y_{i}-\bar{y}_{i})^2}}\]</span></p>
+<p>or by subtracting from the value of 1 the <span class="math inline">\(R^2\)</span> coefficient:</p>
+<p><span class="math display">\[\varphi^2=1-R^2\]</span></p>
+<p>The <span class="math inline">\(\varphi^2\)</span> coefficient of non-determination determines how much of the variance of the dependent variable has not been explained by the regression model.</p>
+<p>In our regression model, <span class="math inline">\(\phi^2=11\%\)</span>, which means that 11% of sales variation was not explained by the regression function. We can also say that 11% of sales variation is random factors not explained by the regression model.</p>
+<p>The last element of the analysis is to evaluate the quality of the <span class="math inline">\(a_1\)</span> and <span class="math inline">\(a_0\)</span> coefficients. We have determined the regression equation based on the available data, but we don’t know the equation for the population. As a result, we may have been a little mistaken in calculating the <span class="math inline">\(a_1\)</span> and <span class="math inline">\(a_0\)</span> parameters. In order to assess the scale of these errors we need to calculate <strong>standard errors of regression coefficient</strong>:</p>
+<p><span class="math display">\[S_{a_{1}}=\frac{S_{u}}{\sqrt{\sum\limits_{i=1}^{n}{(x_{i}-\bar{x})^2}}}\]</span></p>
+<p>and</p>
+<p><span class="math display">\[S_{a_{0}}=\sqrt{\frac{S_{u}^{2}\sum\limits_{i=1}^{n}{{x_{i}^2}}}{n\sum\limits_{i=1}^{n}{(x_{i}-\bar{x})^2}}}\]</span></p>
+<p>These errors indicate how much, on average (<span class="math inline">\(+/-\)</span>), the regression model parameters deviates from their true values. It is of course desirable that these errors are as small as possible. Therefore, it is assumed that the quantities:</p>
+<p><span class="math display">\[V_{a_{1}}=\frac{S_{a_{1}}}{a_{1}}\]</span></p>
+<p><span class="math display">\[V_{a_{0}}=\frac{S_{a_{0}}}{a_{0}}\]</span></p>
+<p>should not exceed 0,5 (50%) in absolute value.</p>
+<p>This is especially important for the slope <span class="math inline">\(a_1\)</span>, while for the intercept <span class="math inline">\(a_0\)</span> this property does not have to be fulfilled.</p>
+<p>In our model, the value of the <span class="math inline">\(a_1\)</span> deviates from its real value by <span class="math inline">\(+/-\)</span> 0,21 which is 2% of the value of this parameter. In turn, the value of parameter <span class="math inline">\(a_0\)</span> deviates from its real value by <span class="math inline">\(+/-\)</span> 119,81, which is 11% of this parameter’s value.</p>
+</div>
+<div id="regression-in-excel" class="section level2">
+<h2>Regression in Excel</h2>
+<p><strong>First method</strong></p>
+<p>Select the points in the scatter plot and right-click. Select <strong>Add Trendline</strong> and then select Display equation on chart and Display R-squared value on chart.</p>
+<p><strong>Second method</strong></p>
+<p>All the parameters of the regression function can also be determined using the built-in Excel function - LINEST. The syntax is as follows:</p>
+<ul>
+<li>LINEST(known_ys; known_xs; const; stats)</li>
+</ul>
+<p>where:</p>
+<ul>
+<li>known_ys - values of dependent variable (y),</li>
+<li>known_xs - values of independent variable (x),</li>
+<li>const - a logical value specifying whether to force the constant to equal 0. Providing 1 estimates model with intercept.</li>
+<li>stats - a logical value specifying whether to return additional regression statistics. If it is equal to 1</li>
+</ul>
+<p>After writing the function and taking into account all arguments, press ENTER - one value should appear. Next, select the area 2 of the column for 5 rows, taking into account the value obtained earlier in the upper left cell. In the next step we go to formula bar and use the keys combination: CTRL+SHIFT+ENTER.</p>
+<p>The result is a 2x5 table which contains the following elements:</p>
+<table>
+<colgroup>
+<col width="50%"></col>
+<col width="49%"></col>
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>slope (<span class="math inline">\(a_{1}\)</span>)</td>
+<td>intercept (<span class="math inline">\(a_{0}\)</span>)</td>
+</tr>
+<tr class="even">
+<td>standard errors of regression coefficient (<span class="math inline">\(S_{a_{1}}\)</span>)</td>
+<td>standard errors of regression coefficient (<span class="math inline">\(S_{a_{0}}\)</span>)</td>
+</tr>
+<tr class="odd">
+<td>coefficient of determination (<span class="math inline">\(R^2\)</span>)</td>
+<td>standard error of the regression (<span class="math inline">\(S_{u}\)</span>)</td>
+</tr>
+<tr class="even">
+<td>F statistics (<span class="math inline">\(F\)</span>)</td>
+<td>degrees of freedom (<span class="math inline">\(n-2\)</span>)</td>
+</tr>
+<tr class="odd">
+<td>regression sum of squares (<span class="math inline">\(\sum{(\hat{y}-\bar{y})^2}\)</span>)</td>
+<td>residual sum of squares (<span class="math inline">\(\sum{(y-\hat{y})^2}\)</span>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Third method</strong></p>
+<p>A graphical data analysis environment can also be used to determine the regression parameters. To do this, select the DATA tab and to the right of the DATA ANALYSIS. In the menu, select REGRESSION and click OK. In the input options, select:</p>
+<ul>
+<li>Input Y range - values of dependent variable (y),</li>
+<li>Input X range - values of independent variable (x),</li>
+<li>Labels - if we select also headers.</li>
+</ul>
+<p>In output options we can select: output range/new worksheet/new workbook.</p>
+<p>As a results we get the following table:</p>
+<p>SUMMARY OUTPUT</p>
+<table>
+<thead>
+<tr class="header">
+<th>Regression Statistics</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Multiple R</td>
+<td><span class="math inline">\(r\)</span></td>
+</tr>
+<tr class="even">
+<td>R Square</td>
+<td><span class="math inline">\(R^2\)</span></td>
+</tr>
+<tr class="odd">
+<td>Adjusted R Square</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Standard Error</td>
+<td><span class="math inline">\(S_{u}\)</span></td>
+</tr>
+<tr class="odd">
+<td>Observations</td>
+<td><span class="math inline">\(n\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>ANOVA</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>df</th>
+<th>SS</th>
+<th>MS</th>
+<th>F</th>
+<th>Significance F</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Regression</td>
+<td>1</td>
+<td><span class="math inline">\(\sum{(\hat{y}-\bar{y})^2}\)</span></td>
+<td></td>
+<td><span class="math inline">\(F\)</span></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Residual</td>
+<td><span class="math inline">\(n-2\)</span></td>
+<td><span class="math inline">\(\sum{(y-\hat{y})^2}\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Total</td>
+<td><span class="math inline">\(n-1\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>Coefficients</th>
+<th>Standard Error</th>
+<th>t Stat</th>
+<th>P-value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Intercept</td>
+<td><span class="math inline">\(a_{0}\)</span></td>
+<td><span class="math inline">\(S_{a_{0}}\)</span></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>x variable</td>
+<td><span class="math inline">\(a_{1}\)</span></td>
+<td><span class="math inline">\(S_{a_{1}}\)</span></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
 
 
 

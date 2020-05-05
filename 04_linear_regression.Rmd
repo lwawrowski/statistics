@@ -178,7 +178,7 @@ In the analyzed example, the $a_0$ coefficient indicates that with zero customer
 
 Another element of the regression analysis is the assessment of model fitting. For this purpose, we use several measures.
 
-The first measure that describes fitting the regression function to the empirical data is the **standard error of the regression**, which is the square root of the sum of the squares of the residuals divided by the number of observations minus 2. This reduction of the denominator is due to the fact that in the model we have two coefficients $a_1$ and $a_0$, which we take into account in this way. Formally this can be written as follows: 
+The first measure that describes fitting the regression function to the empirical data is the **standard error of the regression**, which is the square root of the sum of the squares of the residuals divided by the number of observations minus 2. This reduction of the denominator is due to the fact that in the model we we use 2 means to estimate the slope coefficient (the mean of y and x), which we take into account in this way. Formally this can be written as follows: 
 
 $$S_{u}=\sqrt{\frac{\sum\limits_{i=1}^{n}{(y_{i}-\hat{y}_{i})^2}}{n-2}}$$
 or
@@ -195,128 +195,116 @@ $$y_{1000}=10,45 \cdot 1000 - 1091,22=9358,78$$
 
 On this basis, we conclude that with 1,000 customers, the sales forecast would be EUR 9358,78 $+/-$ 351,57.
 
-Kolejna miara to **współczynnik zmienności resztowej**, który otrzymujemy poprzez podzielenie odchylenia standardowego składnika resztowego przez średni poziom cechy:
+An equally important measure of fitting the regression function to the empirical data is the **coefficient of determination** or more commonly, the **R- squared**. The definition of R-squared is fairly straight-forward; it is the percentage of the dependent variable variation that is explained by a linear model.
 
-$$V_{u}=\frac{S_{u}}{\bar{y}}\cdot 100\%$$
-
-Współczynnik ten wskazuje, jaki procent średniego poziomu zmiennej objaśnianej stanowią wahania losowe, których miarą jest $S_{u}$. Parametr $V_{u}$ jest więc miernikiem relatywnej wielkości błędu losowego. Niektórzy autorzy postulują, że błąd ten można umownie uznać za dopuszczalny, jeśli $V_{u}<15\%$. Należy się jednak wystrzegać przed ,,dogmatycznym'' podejściem do oceny modeli regresji i jedynie słusznych progów. 
-
-W naszym przypadku ten współczynnik będzie równy $V_{u}=\frac{351,57}{4730,72}\cdot 100\%=7\%$ co oznacza, że 7% średniego poziomu sprzedaży stanowią wahania losowe.
-
-Równie ważną miarą dopasowania funkcji regresji do danych empirycznych jest **współczynnik determinacji** lub bardziej potocznie **współczynnik r kwadrat** --- od symbolu, którym jest oznaczany. Współczynnik ten obliczany jest na podstawie reszt z modelu oraz odchyleń wartości empirycznych od średniej:
+R-squared is explained variation divided by total variation which can be formally written as: 
 
 $$R^2=1-\frac{\sum\limits_{i=1}^{n}{(y_{i}-\hat{y}_{i})^2}}{\sum\limits_{i=1}^{n}{(y_{i}-\bar{y}_{i})^2}}$$
 
-lub jako kwadrat współczynnika korelacji liniowej Pearsona:
+or as the square of Pearson coefficient of correlation:
 
 $$R^2=r_{xy}^2$$
 
-Określa, jaki procent wariancji zmiennej objaśnianej został wyjaśniony przez funkcję regresji. $R^2$ przyjmuje wartości z przedziału $<0;1>$ ($<0\%;100\%>$), przy czym model regresji tym lepiej opisuje zachowanie się badanej zmiennej objaśnianej, im $R^2$ jest bliższy jedności (bliższy 100\%)
+It determines what percentage of variable variance is explained by the regression function. $R^2$ takes values from $<0;1>$ ($<0\%;100\%>$). In general, the higher the R-squared, the better the model fits your data.
 
-Analizowany przez nas model regresji jest bardzo dobry: $R^2=0,89$, co oznacza, że oszacowany model regresji wyjaśnia 89% zmienności sprzedaży. 
+The regression model we are analyzing is very good: $R^2=0,89$, which means that the estimated regression model explains 89% of sales variation. 
 
-Przeciwieństwem współczynnik determinacji $R^2$ jest **współczynnik zbieżności (indeterminacji)**. Tę miarę można wyznaczyć korzystając ze wzoru:
+The opposite of the coefficient of determination $R^2$ is the **coefficient of non-determination**. This measure can be determined using the formula:
 
 $$\varphi^2=\frac{\sum\limits_{i=1}^{n}{(y_{i}-\hat{y}_{i})^2}}{\sum\limits_{i=1}^{n}{(y_{i}-\bar{y}_{i})^2}}$$
 
-bądź odejmując od wartości 1 wartość współczynnika $R^2$: 
+or by subtracting from the value of 1 the $R^2$ coefficient: 
 
 $$\varphi^2=1-R^2$$
 
-Współczynnik zbieżności $\varphi^2$ określa, jaka część wariancji badanej zmiennej objaśnianej nie została wyjaśniona przez funkcję regresji. Oczywiste jest więc, że korzystna sytuacja występuje wówczas, gdy $\varphi^2$ jest bliższy zera.
+The $\varphi^2$ coefficient of non-determination determines how much of the variance of the dependent variable has not been explained by the regression model.
 
-W przyjętym przez nas modelu regresji $\phi^2=11\%$, co oznacza, że 11% zmienności sprzedaży nie została wyjaśniona przez funkcję regresji. Można także powiedzieć, że 11% zmienności sprzedaży stanowią czynniki losowe nie wyjaśniane przez funkcję regresji.
+In our regression model, $\varphi^2=11\%$, which means that 11% of sales variation was not explained by the regression function. We can also say that 11% of sales variation is random factors not explained by the regression model.
 
-Ostatnim elementem analizy jest ocena jakości parametrów funkcji regresji $a_1$ i $a_0$. Równanie regresji wyznaczyliśmy na podstawie dostępnych danych, ale nie znamy równania tej prostej w populacji. W związku z czym mogliśmy się trochę pomylić przy obliczaniu współczynników $a_1$ i $a_0$. W celu oceny skali tych błędów wyznacza się **błędy średnie szacunku ocen parametrów funkcji regresji** według wzorów:
+The last element of the analysis is to evaluate the quality of the $a_1$ and $a_0$ coefficients. We have determined the regression equation based on the available data, but we don't know the equation for the population. As a result, we may have been a little mistaken in calculating the $a_1$ and $a_0$ parameters. In order to assess the scale of these errors we need to calculate **standard errors of regression coefficient**:
 
 $$S_{a_{1}}=\frac{S_{u}}{\sqrt{\sum\limits_{i=1}^{n}{(x_{i}-\bar{x})^2}}}$$
 
-oraz 
+and 
 
 $$S_{a_{0}}=\sqrt{\frac{S_{u}^{2}\sum\limits_{i=1}^{n}{{x_{i}^2}}}{n\sum\limits_{i=1}^{n}{(x_{i}-\bar{x})^2}}}$$
 
-Błędy te wskazują, o ile, przeciętnie biorąc ($+/-$), odchylają się oceny parametrów modelu regresji od ich wartości prawdziwych. Jest oczywiście pożądane, żeby te błędy były możliwie jak najmniejsze. W związku z powyższym przyjmuje się, że ilorazy:
+These errors indicate how much, on average ($+/-$), the regression model parameters deviates from their true values. It is of course desirable that these errors are as small as possible. Therefore, it is assumed that the quantities:
 
 $$V_{a_{1}}=\frac{S_{a_{1}}}{a_{1}}$$
 
 $$V_{a_{0}}=\frac{S_{a_{0}}}{a_{0}}$$
 
-nie powinny przekraczać wartości 0,5 (50\%) w wartości bezwzględnej. 
+should not exceed 0,5 (50\%) in absolute value. 
 
-Jest to szczególnie istotne w przypadku parametru współczynnika kierunkowego $a_1$, natomiast dla wyrazu wolnego $a_0$ ta własność nie musi być spełniona.
+This is especially important for the slope $a_1$, while for the intercept $a_0$ this property does not have to be fulfilled.
 
-W analizowanym przez nas modelu wartość parametru $a_1$ odchyla się od jego wartości prawdziwej o $+/-$ 0,21 co stanowi 2% wartości tego parametru. Z kolei wartość parametru $a_0$ odchyla się od jego wartości prawdziwej o $+/-$ 119,81 co stanowi 11% wartości tego parametru.
+In our model, the value of the $a_1$ deviates from its real value by $+/-$ 0,21 which is 2% of the value of this parameter. In turn, the value of parameter $a_0$ deviates from its real value by $+/-$ 119,81, which is 11% of this parameter's value.
 
-**Regresja prosta w Excelu**
+## Regression in Excel
 
-- **Sposób nr 1**
+**First method**
 
-Parametry funkcji regresji można także wyznaczyć korzystając z wbudowanej funkcji programu Excel --- REGLINP. Składnia jest następująca:
+Select the points in the scatter plot and right-click. Select **Add Trendline** and then select Display equation on chart and Display R-squared value on chart.
 
-- REGLINP(wektor_y; wektor_x; stała; statystyka)
+**Second method**
 
-gdzie:
+All the parameters of the regression function can also be determined using the built-in Excel function - LINEST. The syntax is as follows:
 
-- wektor_y --- zestaw wartości zmiennej objaśnianej (y),
-- wektor_x --- zestaw wartości zmiennej objaśniającej (y),
-- stała --- jeśli podamy wartość 1 to wyraz wolny jest obliczany normalnie, jeśli podamy 0 to zostanie oszacowany model bez wyrazu wolnego,
-- statystyka --- jeśli argument ma wartość 1 to funkcja REGLINP zwraca dodatkowe statystyki regresji, natomiast jeśli ma wartość 0 to funkcja zwraca tylko wartości współczynnika kierunkowego oraz wyrazu wolnego.
+- LINEST(known_ys; known_xs; const; stats)
 
-Po napisaniu funkcji i uwzględnieniu wszystkich argumentów naciskamy ENTER --- powinna pojawić się jedna wartość. Następnie należy zaznaczyć obszar 2 kolumny na 5 wiersze uwzględniając w lewej górnej komórce otrzymaną wcześniej wartość. W kolejnym kroku przechodzimy do PASKU FORMUŁY programu Excel i korzystamy z tajemnej formuły CTRL+SHIFT+ENTER.
+where:
 
-W rezultacie otrzymujemy tabelę o wymiarach 2x5, która zawiera następujące elementy:
+- known_ys - values of dependent variable (y),
+- known_xs - values of independent variable (x),
+- const - a logical value specifying whether to force the constant to equal 0. Providing 1 estimates model with intercept.
+- stats - a logical value specifying whether to return additional regression statistics. If it is equal to 1 
+
+After writing the function and taking into account all arguments, press ENTER - one value should appear. Next, select the area 2 of the column for 5 rows, taking into account the value obtained earlier in the upper left cell. In the next step we go to formula bar and use the keys combination: CTRL+SHIFT+ENTER.
+
+The result is a 2x5 table which contains the following elements:
+
 
 |                                                         |                                                       |
 |---------------------------------------------------------|-------------------------------------------------------|
-| Współczynnik kierunkowy ($a_{1}$)                       | Wyraz wolny ($a_{0}$)                                 |
-| Średni błąd szacunku parametru ($S_{a_{1}}$)            | Średni błąd szacunku parametru ($S_{a_{0}}$)          |
-| Współczynnik determinacji ($R^2$)                       | Odchylenie standardowe składnika resztowego ($S_{u}$) |
-| Statystyka F ($F$)                                      | Liczba stopni swobody ($n-2$)                         |
-| Regresyjna suma kwadratów ($\sum{(\hat{y}-\bar{y})^2}$) | Suma kwadratów reszt ($\sum{(y-\hat{y})^2}$)          |
-
-- **Sposób nr 2**
-
-Zaznaczamy punkty na wykresie rozrzutu i klikamy prawym przyciskiem myszy. Wybieramy **Dodaj linię trendu**, a następnie zaznaczamy opcje Wyświetl równanie na wykresie oraz Wyświetl wartości R-kwadrat na wykresie.
-
-- **Sposób nr 3**
-
-Do wyznaczenia parametrów regresji można także wykorzystać graficzne środowisko analizy danych. W tych celu wybieramy zakładkę DANE i po prawej stronie ANALIZA DANYCH. W menu zaznaczamy REGRESJA i klikamy OK. W opcjach wejścia zaznaczamy:
-
-- Zakres wejściowy Y  --- zestaw wartości zmiennej objaśnianej (y),
-- Zakres wejściowy X --- zestaw wartości zmiennej objaśniającej (x),
-- Tytuły --- jeśli zostały zaznaczone kolumny wraz z nagłówkami.
-
-W opcjach wyjścia określamy miejsce wyświetlenia wyniku: bieżący arkusz/nowy arkusz/nowy skoroszyt.
-
-W rezultacie otrzymujemy następujący wynik:
+| slope ($a_{1}$)                       | intercept ($a_{0}$)                                 |
+| standard errors of regression coefficient ($S_{a_{1}}$)            | standard errors of regression coefficient ($S_{a_{0}}$)          |
+| coefficient of determination ($R^2$)                       | standard error of the regression ($S_{u}$) |
+| F statistics ($F$)                                      | degrees of freedom ($n-2$)                         |
+| regression sum of squares ($\sum{(\hat{y}-\bar{y})^2}$) | residual sum of squares ($\sum{(y-\hat{y})^2}$)          |
 
 
-PODSUMOWANIE - WYJŚCIE
+**Third method**
 
-| Statystyki regresji  |         |
+A graphical data analysis environment can also be used to determine the regression parameters. To do this, select the DATA tab and to the right of the DATA ANALYSIS. In the menu, select REGRESSION and click OK. In the input options, select:
+
+- Input Y range - values of dependent variable (y),
+- Input X range - values of independent variable (x),
+- Labels - if we select also headers.
+
+In output options we can select: output range/new worksheet/new workbook.
+
+As a results we get the following table:
+
+SUMMARY OUTPUT
+
+| Regression Statistics  |         |
 |----------------------|---------|
-| Wielokrotność R      | $r$     |
-| R kwadrat            | $R^2$   |
-| Dopasowany R kwadrat |         |
-| Błąd standardowy     | $S_{u}$ |
-| Obserwacje           | $n$     |
+| Multiple R      | $r$     |
+| R Square            | $R^2$   |
+| Adjusted R Square |         |
+| Standard Error     | $S_{u}$ |
+| Observations     | $n$     |
 
-ANALIZA WARIANCJI
+ANOVA
 
-|       | df    |    SS       | MS          |F   | Istotność F            |
+|       | df    |    SS       | MS          |F   | Significance F          |
 |-----------|-----|-------------|-------------|-------------|-------------|
-| Regresja  | 1   | $\sum{(\hat{y}-\bar{y})^2}$ |  | $F$ |  |
-| Resztkowy | $n-2$ | $\sum{(y-\hat{y})^2}$ |  |             |             |
-| Razem     | $n-1$ |  |             |             |             |
+| Regression  | 1   | $\sum{(\hat{y}-\bar{y})^2}$ |  | $F$ |  |
+| Residual | $n-2$ | $\sum{(y-\hat{y})^2}$ |  |             |             |
+| Total     | $n-1$ |  |             |             |             |
 
-|        | Współczynniki |Błąd standardowy       | t Stat     | Wartość-p    |  
+|        | Coefficients |Standard Error       | t Stat     | P-value   |  
 |---------------------|------------------|-------------|--------------|-------------|
-| Przecięcie          | $a_{0}$     | $S_{a_{0}}$ |  |  |
-| zmienna x | $a_{1}$      | $S_{a_{1}}$ |   |  |
-
-Zależności:
-
-- Jeżeli ze wzoru na odchylenie standardowe składnika resztowego usuniemy pierwiastek to otrzymamy wariancję składnika resztowego, którą należy najpierw spierwiastkować, aby móc przeprowadzić interpretację.
-
-- Jeśli bardzo chcemy policzyć wartość odchylenia standardowe składnika resztowego na podstawie wartości surowych to wartość licznika możemy odczytać z funkcji REGLINP --- 5 wiersz, 2 kolumna. Wówczas wystarczy podzielić tę wartość przez 4 wiersz drugiej kolumny i spierwiastkować, aby otrzymać wartość $S_u$. Podobnie postępujemy, jeśli korzystamy z narzędzia REGRESJA.
-
+| Intercept          | $a_{0}$     | $S_{a_{0}}$ |  |  |
+| x variable | $a_{1}$      | $S_{a_{1}}$ |   |  |
