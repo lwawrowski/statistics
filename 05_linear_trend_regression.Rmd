@@ -18,7 +18,7 @@ options(scipen = 999)
 load("data/dane.RData")
 
 rossmann_1 <- rossmann %>% 
-  filter(sklep_id == 1, czy_otwarty == "Tak")
+  filter(sklep_id == 7, czy_otwarty == "Tak")
 ```
 
 Regression is also used for forecasting over time. For example, with monthly sales values for 2014 year, we will try to determine possible sales in the selected month of 2015. 
@@ -46,7 +46,7 @@ ggplot(rossmann_m, aes(x=miesiac, y=sprzedaz_suma)) +
   xlab("Month") + 
   ylab("Monthy sales") +
   scale_x_continuous(breaks = 1:12) +
-  ylim(100000,170000) +
+  # ylim(100000,170000) +
   theme_light()
 ```
 
