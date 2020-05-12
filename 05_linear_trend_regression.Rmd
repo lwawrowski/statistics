@@ -1,0 +1,107 @@
+---
+title: "Linear trend regression"
+author: "Łukasz Wawrowski"
+output: html_document
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(cache = FALSE, echo = FALSE, message = F, error = F)
+```
+
+
+```{r}
+library(tidyverse)
+library(lubridate)
+
+options(scipen = 999)
+
+load("data/dane.RData")
+
+rossmann_1 <- rossmann %>% 
+  filter(sklep_id == 1, czy_otwarty == "Tak")
+```
+
+Regression is also used for forecasting over time. For example, with monthly sales values for 2014 year, we will try to determine possible sales in the selected month of 2015. 
+
+The procedure is very similar to simple regression except that instead of the $x$ value we have consecutive period numbers $t=1,2,3,..., n$. Then the trend equation has the following form:
+
+$$\hat{y}_{i}=a_{1}t_{i}+a_{0}$$
+
+After estimating the parameters $a_1$ and $a_0$ we will interpret them a little differently. 
+
+The value of the parameter $a_1$ informs about the average change of the $y$ variable from period to period, while $a_0$ is the theoretical value for the 0th period.
+
+Let's try to determine possible sales in January 2015 for shop number 7. For this purpose, we have aggregated the data into monthly form. 
+
+```{r}
+rossmann_m <- rossmann_1 %>% 
+  mutate(data=as_date(data),
+         miesiac=month(data)) %>% 
+  group_by(miesiac) %>% 
+  summarise(sprzedaz_suma=sum(sprzedaz))
+
+ggplot(rossmann_m, aes(x=miesiac, y=sprzedaz_suma)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  xlab("Month") + 
+  ylab("Monthy sales") +
+  scale_x_continuous(breaks = 1:12) +
+  ylim(100000,170000) +
+  theme_light()
+```
+
+Then linear trend regression model has the following form:
+
+$$\hat{y}_{i}=4850t_{i}+196592$$
+
+It shows that from month to month sales increased on average by 4850 EUR. The theoretical sales in December 2013 was 196592 EUR. 
+
+The quality of the model is assessed in the same way as in the case of simple regression. The forecast error is determined differently, which is due to the fact that the further we "move" away from the period from which we estimated the trend parameters, the greater the forecast error will be.
+
+For calculating the forecasting error we use a formula:
+
+$$D(y_{T}^{P})=S_u\sqrt{1+\frac{1}{n}+\frac{(T-\bar{t})^2}{\sum\limits_{t=1}^{n}{(t_i-\bar{t})^2}}}$$
+
+where:
+
+- $S_u$ - standard error of the regression,
+- $n$ - number of known periods,
+- $\bar{t}$ - average of number of periods,
+- $T$ - number of the period for which the forecast is made.
+
+The standard error of the regression was 20031 EUR, which means that known monthly sales values deviate from trend values by an average of $+/-$ 20031 EUR. 
+
+When determining the forecast error, we must take into account an additional time-sensitive component. Therefore, the sales forecast for January 2015 will be as follows:
+
+$$\hat{y}_{13}=4850\cdot13+196592=259639$$
+
+and forecast error:
+
+$$D(y_{13}^{P})=20031\sqrt{1+\frac{1}{12}+\frac{(13-6,5)^2}{143}}=23521$$
+
+The forecast monthly sales in January 2015 will amount to 259 639 EUR +/- 23 521 EUR.
+
+For February the forecast error will be higher:
+
+$$\hat{y}_{14}=4850\cdot14+196592=264489$$
+
+
+$$D(y_{14}^{P})=20031\sqrt{1+\frac{1}{12}+\frac{(14-6,5)^2}{143}}=24341$$
+
+We can notice that forecast error does not change in linear way: 
+
+```{r}
+prog <- data.frame(t=13:36) %>% 
+  mutate(dp=20031*sqrt(1+1/12+((t-6.5)^2)/143))
+
+ggplot(prog, aes(x=t, y = dp)) + 
+  geom_point() +
+  geom_smooth(method = "lm", se = F, color = "grey80") +
+  xlab("Month") + 
+  ylab("Forecast error") +
+  scale_x_continuous(breaks = 13:36) +
+  ylim(10000,60000) +
+  theme_light()
+```
+
+
