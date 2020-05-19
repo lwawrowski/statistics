@@ -10,7 +10,7 @@ poland_trend <- poland %>%
   filter(date > "2020-03-15") %>% 
   filter(!is.na(confirmed)) %>% 
   select(3:6) %>% 
-  mutate(t=1:56)
+  mutate(t=1:63)
 
 summary(lm(poland_trend$confirmed ~ poland_trend$t))
   
@@ -18,4 +18,4 @@ ggplot(poland_trend, aes(x=date, y=confirmed)) +
   geom_point() +
   geom_smooth(method = "lm")
 
-write.table(poland_trend, file = "data/covid.csv", sep = ";", dec = ",", row.names = F)
+write.table(poland_trend, file = "data/covid2020.csv", sep = ";", dec = ",", row.names = F)
