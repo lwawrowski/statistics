@@ -1,0 +1,125 @@
+---
+title: "Indexes"
+author: "Łukasz Wawrowski"
+output: html_document
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(cache = FALSE, echo = FALSE, message = F, error = F)
+```
+
+```{r}
+library(tidyverse)
+library(lubridate)
+
+options(scipen = 999)
+
+piwa <- readxl::read_xlsx("data/piwa.xlsx")
+
+piwa_wlkp <- piwa %>%
+  filter(wojewodztwo=="Wielkopolskie") %>%
+  group_by(miesiac) %>%
+  summarise(sold_beers=sum(sztuki)) %>% 
+  mutate(month=month.name[1:8]) %>% 
+  select(month,sold_beers)
+
+```
+
+An index shows the development of a number over time. It is not expressed in tons, euro or any similar common unit; it only shows the change of a figure from one point in time to another. 
+
+Indexes and indices are both accepted and widely used plurals of the noun index. Both appear throughout the English-speaking world, but indices prevails in varieties of English from outside North America, while indexes is more common in American and Canadian English. Meanwhile, indices is generally preferred in mathematical, financial, and technical contexts, while indexes is relatively common in general usage.
+
+Let's consider the following example:
+
+```{r}
+piwa_wlkp %>%
+  knitr::kable()
+```
+
+## Fixed-base index (FBI)
+
+An index number for which the base period for the calculations is selected and remains unchanged during the lifetime of the index. For simplicity, the reference value, which may refer to a given year (base year), is usually set to 100. An index value of 110 then indicates an increase by 10% compared to the value in the reference period.
+
+$$\frac{y_1}{y_1}, \frac{y_2}{y_1}, ..., \frac{y_{n-1}}{y_1}, \frac{y_n}{y_1}$$
+
+## Chain index (CI)
+
+A chain index is an index number in which the value of any given period is related to the value of its immediately preceding period (resulting in an index for the given period expressed against the preceding period = 100); this is distinct from the fixed-base index, where the value of every period in a time series is directly related to the same value of one fixed base period.
+
+$$\frac{y_2}{y_1}, \frac{y_3}{y_2}, ..., \frac{y_{n-1}}{y_{n-2}}, \frac{y_n}{y_{n-1}}$$
+
+In table below there are values of fixed-base (May = 100%) and chain indices:
+
+```{r, echo=FALSE}
+
+piwa_wlkp %>%
+  mutate(FBI=round((sold_beers/2594)*100,2),
+         CI=round((sold_beers/lag(sold_beers,1))*100,2)) %>%
+  knitr::kable()
+
+```
+
+Based on indices you can easily change fixed-based index into chain index and vice versa. Moreover we can switch base period in fixed-base index.
+
+### Fixed-based index into chain index
+
+In practice, we calculate chain indices on the basis of fixed-base indices in the same way as ordinary chain indices, only instead of absolute values we substitute values of fixed-base indices.
+
+$$\frac{y_i}{y_1}/\frac{y_{i-1}}{y_1}=\frac{y_i}{y_{i-1}}$$
+
+### Chain index into fixed-base index
+
+1. fixed-based index in the base period is equal to 100%,
+2. fixed-based index in the period immediately following the base period is the same as chain index,
+3. further fixed-base indices after the base period are obtained by multiplying the fixed-base index from the previous period by a chain index for the analysed period,
+4. fixed-base indices before the base period are a division of a fixed-base index from the following period and a chain index from the following period.
+
+### Fixed-base index into different fixed-base index
+
+A single-base index with a new base is calculated in the same way as if we were calculating a fixed-base index on the basis of absolute values, but instead we are substituting values of fixed-base indices.
+
+## Average rate of change
+
+The average rate of change expressed as a percentage determines what is the average periodic percentage increase or decrease of the analysed phenomenon in the examined period of time.
+
+We can calculate it as a geometric mean of chain indices or as a root of degree $n-1$ of $y_n$ divided by $y_1$:
+
+$$\bar{y}_g=\sqrt[n-1]{\frac{y_2}{y_1}\cdot\frac{y_3}{y_2}\cdot\frac{y_4}{y_3}\cdot...\cdot\frac{y_{n-1}}{y_{n-2}}\cdot\frac{y_n}{y_{n-1}}}=\sqrt[n-1]{\prod_{i=2}^{n}{\frac{y_i}{y_{i-1}}}}=\sqrt[n-1]{\frac{y_n}{y_1}}$$
+
+```{r}
+sr_geom <- exp(mean(log(piwa_wlkp$sold_beers/lag(piwa_wlkp$sold_beers,1)), na.rm = T))*100
+```
+
+The average rate of change for beer's sales is `r round(sr_geom,2)`%, which means that the number of sold beers grew from month to month on average by `r round(sr_geom,2)-100`%. 
+
+Assuming that in future periods, the analyzed phenomenon will develop at the current rate, we can use the average rate of change for forecasting purpose:
+
+$$y_T=y_n\cdot \bar{y}_{g}^{(T-n)}$$
+
+where:
+
+- $T$ - number of the period for which the forecast is made,
+- $n$ - number of known periods.
+
+However, the estimation using the above method requires that the development of this variable so far should be unidirectional and not be too volatile. Moreover no forecast error can be established. 
+
+```{r, echo=FALSE}
+
+piwa_wlkp_9 <- round(piwa_wlkp$sold_beers[8]*sr_geom/100^(9-8))
+
+```
+
+Assuming that the demand for beer will not fall in September, the forecast is `r piwa_wlkp_9` units.
+
+And last remark: knowing the value of a variable in a last period, we can reconstruct values for previous periods by dividing this value by a chain index.
+
+Sources:
+
+https://grammarist.com/usage/indexes-indices/
+
+https://ec.europa.eu/eurostat/statistics-explained/index.php/Beginners:Statistical_concept_-_Index_and_base_year
+
+https://ec.europa.eu/eurostat/statistics-explained/index.php/Glossary:Chain_index
+
+https://stats.oecd.org/glossary/detail.asp?ID=3650
+
