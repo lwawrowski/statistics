@@ -483,24 +483,24 @@ summary {
 </tr>
 </tbody>
 </table>
-<p>Based on indices you can easily change fixed-based index into chain index and vice versa. Moreover we can switch base period in fixed-base index.</p>
-<div id="fixed-based-index-into-chain-index" class="section level3">
-<h3>Fixed-based index into chain index</h3>
+<p>Based on indices you can easily change fixed-base index into chain index and vice versa. Moreover we can switch base period in fixed-base index.</p>
+<div id="fixed-base-index-into-chain-index" class="section level3">
+<h3>Fixed-base index into chain index</h3>
 <p>In practice, we calculate chain indices on the basis of fixed-base indices in the same way as ordinary chain indices, only instead of absolute values we substitute values of fixed-base indices.</p>
 <p><span class="math display">\[\frac{y_i}{y_1}/\frac{y_{i-1}}{y_1}=\frac{y_i}{y_{i-1}}\]</span></p>
 </div>
 <div id="chain-index-into-fixed-base-index" class="section level3">
 <h3>Chain index into fixed-base index</h3>
 <ol style="list-style-type: decimal">
-<li>fixed-based index in the base period is equal to 100%,</li>
-<li>fixed-based index in the period immediately following the base period is the same as chain index,</li>
+<li>fixed-base index in the base period is equal to 100%,</li>
+<li>fixed-base index in the period immediately following the base period is the same as chain index,</li>
 <li>further fixed-base indices after the base period are obtained by multiplying the fixed-base index from the previous period by a chain index for the analysed period,</li>
 <li>fixed-base indices before the base period are a division of a fixed-base index from the following period and a chain index from the following period.</li>
 </ol>
 </div>
 <div id="fixed-base-index-into-different-fixed-base-index" class="section level3">
 <h3>Fixed-base index into different fixed-base index</h3>
-<p>A single-base index with a new base is calculated in the same way as if we were calculating a fixed-base index on the basis of absolute values, but instead we are substituting values of fixed-base indices.</p>
+<p>A fixed-base index with a new base is calculated in the same way as if we were calculating a fixed-base index on the basis of absolute values, but instead we are substituting values of fixed-base indices.</p>
 </div>
 </div>
 <div id="average-rate-of-change" class="section level2">
@@ -508,6 +508,7 @@ summary {
 <p>The average rate of change expressed as a percentage determines what is the average periodic percentage increase or decrease of the analysed phenomenon in the examined period of time.</p>
 <p>We can calculate it as a geometric mean of chain indices or as a root of degree <span class="math inline">\(n-1\)</span> of <span class="math inline">\(y_n\)</span> divided by <span class="math inline">\(y_1\)</span>:</p>
 <p><span class="math display">\[\bar{y}_g=\sqrt[n-1]{\frac{y_2}{y_1}\cdot\frac{y_3}{y_2}\cdot\frac{y_4}{y_3}\cdot...\cdot\frac{y_{n-1}}{y_{n-2}}\cdot\frac{y_n}{y_{n-1}}}=\sqrt[n-1]{\prod_{i=2}^{n}{\frac{y_i}{y_{i-1}}}}=\sqrt[n-1]{\frac{y_n}{y_1}}\]</span></p>
+<p>In Excel the name of function is GEOMEAN.</p>
 <p>The average rate of change for beer’s sales is 105.05%, which means that the number of sold beers grew from month to month on average by 5.05%.</p>
 <p>Assuming that in future periods, the analyzed phenomenon will develop at the current rate, we can use the average rate of change for forecasting purpose:</p>
 <p><span class="math display">\[y_T=y_n\cdot \bar{y}_{g}^{(T-n)}\]</span></p>
